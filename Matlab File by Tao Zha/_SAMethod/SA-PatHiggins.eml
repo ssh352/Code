@@ -1,0 +1,308 @@
+Delivered-To: zmail@tzha.net
+Received: by 10.194.237.231 with SMTP id vf7csp692784wjc;
+        Thu, 11 Dec 2014 10:55:59 -0800 (PST)
+X-Received: by 10.224.122.15 with SMTP id j15mr23152893qar.68.1418324158270;
+        Thu, 11 Dec 2014 10:55:58 -0800 (PST)
+Return-Path: <patrick.higgins@atl.frb.org>
+Received: from p1fed1.frb.org (p1fed1.frb.org. [199.169.200.4])
+        by mx.google.com with ESMTPS id b8si2235619qam.107.2014.12.11.10.55.56
+        for <zmail@tzha.net>
+        (version=TLSv1 cipher=RC4-SHA bits=128/128);
+        Thu, 11 Dec 2014 10:55:58 -0800 (PST)
+Received-SPF: pass (google.com: domain of patrick.higgins@atl.frb.org designates 199.169.200.4 as permitted sender) client-ip=199.169.200.4;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of patrick.higgins@atl.frb.org designates 199.169.200.4 as permitted sender) smtp.mail=patrick.higgins@atl.frb.org
+From: "Higgins, Patrick C" <patrick.higgins@atl.frb.org>
+To: "zmail@tzha.net" <zmail@tzha.net>
+Subject: quick and dirty seasonal adjustment
+Thread-Topic: quick and dirty seasonal adjustment
+Thread-Index: AdAVcc9VL4ktB8uCSgKEgV5bPf9o8g==
+Date: Thu, 11 Dec 2014 18:55:46 +0000
+Message-ID: <D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AF@NR1PWPGLCD1D.rb.win.frb.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+x-originating-ip: [172.29.194.69]
+Content-Type: multipart/mixed;
+	boundary="_004_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_"
+MIME-Version: 1.0
+X-VPM-MSG-ID: 354799e6-d57d-4423-8cf2-2ff5baa09678
+X-VPM-HOST: p3pzix32.glc.frb.org
+X-VPM-GROUP-ID: 0b8e89ef-a1d4-483d-9a7f-80ff1a8663be
+X-VPM-ENC-REGIME: Plaintext
+X-VPM-CERT-FLAG: 0
+X-VPM-IS-HYBRID: 0
+
+--_004_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_
+Content-Type: multipart/alternative;
+	boundary="_000_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_"
+
+--_000_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Tao,
+
+After thinking on it a bit more, I think you need to do a modification to e=
+nsure that the seasonal factors average out to 0.  There are three ways to =
+do this
+
+
+1.)    Regress log of data on a constant, time trend, and 3 quarterly dummi=
+es.  Set the regression coefficient for the omitted seasonal dummy (fourth =
+quarter) to 0.  Call these coefficients Bsa.  Then subtract off the mean of=
+  Bsa from Bsa to get the adjusted seasonal adjustment coefficients BsaTild=
+a.
+
+2.)    Regress log difference of data on a constant and 3 quarterly dummies=
+.  Again, set the regression coefficient for the omitted seasonal dummy to =
+0 to get Bsa and demean Bsa to get BsaTilda.  Set the seasonally adjusted s=
+eries for the first period to the first period value of the NSA series.  Th=
+en cumulate with the SA growth rates.  Finally, demean the SA log-level ser=
+ies and add back the mean of the NSA log-level series.
+
+3.)    Use equation (8) from   -- William H. Greene and Terry G. Seaks, "Th=
+e Restricted Least Squares Estimator: A Pedagogical Note", The Review of Ec=
+onomics and Statistics, Vol. 73, No. 3 (Aug., 1991), pp. 563-567.  This for=
+mula allows one to include all four seasonal dummies and incorporate a rest=
+riction that their regression coefficients sum to 1.  This formula gives yo=
+u the same result as 1.) in the simple case I did.
+
+I attach a toy Matlab program that implements the three methods.  The data =
+I use is quarter NSA data on private payroll employment from the U.S. for 1=
+992Q1-2013Q4.
+
+-Pat
+
+
+--_000_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 14 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-priority:34;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri","sans-serif";}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:1091313481;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-91213980 613187156 67698713 67698715 67698703 67698=
+713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-text:"%1\.\)";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.25in;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:1.75in;
+	text-indent:-9.0pt;}
+@list l0:level4
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.75in;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:3.25in;
+	text-indent:-9.0pt;}
+@list l0:level7
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.75in;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:4.25in;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:4.75in;
+	text-indent:-9.0pt;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Tao,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">After thinking on it a bit more, I think you need to=
+ do a modification to ensure that the seasonal factors average out to 0.&nb=
+sp; There are three ways to do this<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoListParagraph" style=3D"margin-left:.75in;text-indent:-.25in=
+;mso-list:l0 level1 lfo1">
+<![if !supportLists]><span style=3D"mso-list:Ignore">1.)<span style=3D"font=
+:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Regress log of data on a constant, time trend, and =
+3 quarterly dummies.&nbsp; Set the regression coefficient for the omitted s=
+easonal dummy (fourth quarter) to 0.&nbsp; Call these coefficients
+<b>Bsa</b>.&nbsp; Then subtract off the mean of <b>&nbsp;Bsa </b>from <b>Bs=
+a </b>to get the adjusted seasonal adjustment coefficients
+<b>BsaTilda</b>. <o:p></o:p></p>
+<p class=3D"MsoListParagraph" style=3D"margin-left:.75in;text-indent:-.25in=
+;mso-list:l0 level1 lfo1">
+<![if !supportLists]><span style=3D"mso-list:Ignore">2.)<span style=3D"font=
+:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Regress log difference of data on a constant and 3 =
+quarterly dummies.&nbsp; Again, set the regression coefficient for the omit=
+ted seasonal dummy to 0 to get
+<b>Bsa</b> and demean <b>Bsa</b> to get <b>BsaTilda</b>.&nbsp; Set the seas=
+onally adjusted series for the first period to the first period value of th=
+e NSA series.&nbsp; Then cumulate with the SA growth rates.&nbsp; Finally, =
+demean the SA log-level series and add back the
+ mean of the NSA log-level series.<o:p></o:p></p>
+<p class=3D"MsoListParagraph" style=3D"margin-left:.75in;text-indent:-.25in=
+;mso-list:l0 level1 lfo1">
+<![if !supportLists]><span style=3D"mso-list:Ignore">3.)<span style=3D"font=
+:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Use equation (8) from &nbsp;&nbsp;-- William H. Gre=
+ene and Terry G. Seaks, &#8220;The Restricted Least Squares Estimator: A Pe=
+dagogical Note&#8221;, The Review of Economics and Statistics, Vol. 73, No.=
+ 3 (Aug., 1991), pp. 563-567.&nbsp; This formula allows one
+ to include all four seasonal dummies and incorporate a restriction that th=
+eir regression coefficients sum to 1.&nbsp; This formula gives you the same=
+ result as 1.) in the simple case I did.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I attach a toy Matlab program that implements the th=
+ree methods.&nbsp; The data I use is quarter NSA data on private payroll em=
+ployment from the U.S. for 1992Q1-2013Q4.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">-Pat<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body>
+</html>
+
+--_000_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_--
+
+--_004_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_
+Content-Type: application/octet-stream; name="seasadjNFP.m"
+Content-Description: seasadjNFP.m
+Content-Disposition: attachment; filename="seasadjNFP.m"; size=2401;
+	creation-date="Thu, 11 Dec 2014 18:52:56 GMT";
+	modification-date="Thu, 11 Dec 2014 18:53:44 GMT"
+Content-Transfer-Encoding: base64
+
+dGltZSA9ICgxOTkyOjAuMjU6MjAxNC41KSc7DQolU3RhcnQgYW5kIGVuZCBkYXRlcyBvZiBzYW1w
+bGUgcGVyaW9kIHRvIHVzZQ0KdDAgPSAxOTkyOyB0MSA9IDIwMTMuNzU7DQolUHJpdmF0ZSANCnkg
+PSBbODgxNjcJOTAwMjMJOTA4NjkJOTEwMDINCjg5NTQ3CTkxNzYxCTkzMDEyCTkzNDY1DQo5MjE4
+OAk5NDg4OQk5NjQwNwk5NzAxMA0KOTU3MzcJOTc5MjQJOTg5OTUJOTkyNDMNCjk3NjMyCTEwMDE3
+NwkxMDE0ODgJMTAxODkyDQoxMDA0OTYJMTAzMTczCTEwNDQyMgkxMDUwNTYNCjEwMzYyNQkxMDYy
+MDYJMTA3MzYwCTEwNzc5OQ0KMTA2Mjc4CTEwODg2NQkxMTAwMzcJMTEwNTUwDQoxMDg5ODAJMTEx
+MzUwCTExMjI1NQkxMTIzMzUNCjExMDIxNAkxMTE2MTgJMTExNTg5CTExMDQwNA0KMTA3NzczCTEw
+OTQwMQkxMDk3NjkJMTA5NTE1DQoxMDcxNjYJMTA4ODc5CTEwOTM5NwkxMDk0OTYNCjEwNzY4NQkx
+MTAzNjEJMTExMTAwCTExMTM2NQ0KMTA5NTU4CTExMjI5NAkxMTMzMjYJMTEzNjI0DQoxMTIxMzYJ
+MTE0NjI1CTExNTQwMwkxMTU1MzINCjExMzcxMgkxMTYwMjEJMTE2NjAyCTExNjUzNw0KMTE0MTM0
+CTExNTU0OQkxMTUzNTcJMTEzNjAyDQoxMDg5OTcJMTA5MDA3CTEwODY3MQkxMDgwMzcNCjEwNTYx
+OAkxMDc4NjUJMTA4Njc1CTEwODk4MQ0KMTA3MTI2CTEwOTgzMwkxMTA3OTUJMTExMjY3DQoxMDk4
+MjQJMTEyMjU3CTExMzA4MAkxMTM1NzQNCjExMTk2MAkxMTQ1MjEJMTE1NTE1CTExNjAxOA0KMTE0
+MjI0CTExNjkzMwkxMTgwODcgTmFOXSc7DQp5PWxvZyh5KDopKTsNCg0KDQppbmQwID0gZmluZCh0
+aW1lID09IHQwKTsNCmluZDEgPSBmaW5kKHRpbWUgPT0gdDEpOw0KDQp5ID0geShpbmQwOmluZDEp
+Ow0KdGltZSA9IHRpbWUoaW5kMDppbmQxKTsNClRxID0gbGVuZ3RoKHkpOw0KVHkgPSBjZWlsKFRx
+LzQpOw0KDQoNCnRpbWV0cmVuZCA9ICgxOlRxKSc7DQpjb25zdCA9IG9uZXMoVHEsMSk7DQpTZWFz
+RHVtTWF0ID0ga3JvbihvbmVzKFR5LDEpLGV5ZSg0KSk7DQpTZWFzRHVtTWF0ID0gU2Vhc0R1bU1h
+dCgxOlRxLDopOw0KU2Vhc0R1bU1hdFRydW5jID0gU2Vhc0R1bU1hdCg6LDE6Myk7DQoNCg0KDQol
+U2Vhc29uYWwgYWRqdXN0bWVudCB2ZXJzaW9uIDEgKGxldmVscykNClggPSBbY29uc3QgdGltZXRy
+ZW5kIFNlYXNEdW1NYXRUcnVuY107DQpCZXRhT0xTID0gcmVncmVzcyh5LFgpOw0KQmV0YVNlYXMg
+PSBbQmV0YU9MUygzOjUpIDsgMF0gLSBzdW0oQmV0YU9MUygzOjUpKS80Ow0KeVNBMSA9IHkgLSBT
+ZWFzRHVtTWF0KkJldGFTZWFzOw0KDQoNCg0KDQoNCiVTZWFzb25hbCBhZGp1c3RtZW50IHZlcnNp
+b24gMiAoZGlmZmVyZW5jZXMpDQpYID0gW2NvbnN0IFNlYXNEdW1NYXRUcnVuY107DQpCZXRhT0xT
+MiA9IHJlZ3Jlc3MoZGlmZih5KSxYKDI6ZW5kLDopKTsNCkJldGFTZWFzMiA9IFtCZXRhT0xTMigy
+OjQpIDsgMF0gLSBzdW0oQmV0YU9MUzIoMjo0KSkvNDsNCnlTQTIgPSBOYU4oVHEsMSk7DQp5U0Ey
+KDEpID0geSgxKTsNCmZvciB0dHQ9MjpUcQ0KeVNBMih0dHQpID0geVNBMih0dHQtMSkgKyAoeSh0
+dHQpLXkodHR0LTEpKSAtIFNlYXNEdW1NYXQodHR0LDopKkJldGFTZWFzMjsNCmVuZA0KeVNBMiA9
+IHlTQTIgLSBtZWFuKHlTQTIpICsgbWVhbih5KTsNCg0KDQoNCiVTZWFzb25hbCBhZGp1c3RtZW50
+IHZlcnNpb24gMyAobGV2ZWxzKSwgdXNlcyBlcXVhdGlvbiAoOCkgb2YgV2lsbGlhbSBILiBHcmVl
+bmUgYW5kIFRlcnJ5IEcuIFNlYWtzDQolVGhlIFJlc3RyaWN0ZWQgTGVhc3QgU3F1YXJlcyBFc3Rp
+bWF0b3I6IEEgUGVkYWdvZ2ljYWwgTm90ZQ0KJVNvdXJjZTogVGhlIFJldmlldyBvZiBFY29ub21p
+Y3MgYW5kIFN0YXRpc3RpY3MsIFZvbC4gNzMsIE5vLiAzIChBdWcuLCAxOTkxKSwgcHAuIDU2My01
+NjcNClggPSBbY29uc3QgdGltZXRyZW5kIFNlYXNEdW1NYXRdOw0KUiA9IFswIDAgMSAxIDEgMV07
+DQpyID0gMDsNClhYID0gWCcqWDsNClhYdGlsZGEgPSBbW1hYIFInXTsgWyBSIDBdXTsNCmJzdGFy
+bGFtYmRhID0gWFh0aWxkYVxbWCcqeSA7IHJdOw0KQmV0YVJMUyA9IGJzdGFybGFtYmRhKDE6ZW5k
+LTEpOw0KQmV0YVNlYXMzID0gQmV0YVJMUygzOmVuZCk7DQp5U0EzID0geSAtIFNlYXNEdW1NYXQq
+QmV0YVNlYXMzOw0KDQoNCg0KDQoNCmZpZ3VyZTsNCnN1YnBsb3QoMiwxLDEpOw0KcGxvdCh0aW1l
+LFt5U0ExIHlTQTIgeVNBMyB5XSk7DQpncmlkIG9uOw0KdGl0bGUoJ0xvZy1MZXZlbHMnKTsNCmxl
+Z2VuZCgneVNBMScsJ3lTQTInLCd5U0EzJywneU5TQScpOw0Kc3VicGxvdCgyLDEsMik7DQpwbG90
+KHRpbWUoMjplbmQpLDEwMCpkaWZmKFt5U0ExIHlTQTIgeVNBM10pKTsNCmdyaWQgb247DQp0aXRs
+ZSgnTG9nLURpZmZlcmVuY2VzIHRpbWVzIDEwMCcpOw0KbGVnZW5kKCd5U0ExJywneVNBMicsJ3lT
+QTMnKTsNCg==
+
+--_004_D02C525EA01D9A40ACE5D7AECA286A0E2F9DA4AFNR1PWPGLCD1Drbw_--
+

@@ -1,0 +1,34 @@
+Guide for D:\ZhaData\WorkDisk\Br_Rv\...\DataArrange
+
+
+%*********************
+When read *.xls, check xdd.  Sometimes, xdd=xdd(:,2:end), but sometimes, xdd = xdd(:,1:end) is fine.
+%*********************
+
+
+
+M and MAT files (ordered sequentially in running these files)
+-----------------------------------
+(1) chowlin.m:  Reads both Datam1104.xls and Dataq1104.xls to interpolate (1) GDP, (2) real bus invest, and (3)
+real res invest, using the Chow-Lin procedure. Before running it, check yrFin, qmFin, yrEnd, and qmEnd for
+both monthly and quarterly data.  Export outgdp.mat (do NOT rename this until chowlin1.m is performed).
+
+(2) chowlin1.m:  Continued from running chowlin.m and read both Datam1104.xls and Dataq1104.xls to interpolate GDP
+deflator. Before running it, check yrFin, qmFin, yrEnd, and qmEnd for both monthly and quarterly data. Add or
+append the interpolated data to outgdp.mat.
+
+(3) xdgdp.mat: 59:01-04:09.  The file outgdp.mat produced by chowlin*.m is now renamed as such.
+
+(4) datamg.m:  59:01-04:08.  Produces outxdd.mat that combines the monthly data datam1104.xls and xdgdp.mat
+(possibly with a few rows of NaNs added to X2 for the gdp data) to get the final interpolated data of gdp,
+deflator, etc. Before running it, check yrFin, qmFin, yrEnd, and qmEnd for monthly data.
+
+(5) xd58.mat: 59:01-04:08.  The file outxdd.mat produced by datamg.m is renamed here.
+
+
+
+Adds the Divisia M2 series to xd46.mat.
+-----------------------------------
+(6) add_divisiaM2.m:  Adds the Divisia M2 to xd58.mat to become xd59.mat.
+
+(7) xd59.mat: 59:01-04:08.  The file outxd.mat produced by add_divisiaM2.m is renamed here.
