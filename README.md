@@ -1,7 +1,7 @@
 # Code Summary
 last update: 2018-11-03 17:07:10
 
-By [Eric So](http://mitmgmtfaculty.mit.edu/eso/additional-materials/
+By [Eric So](http://mitmgmtfaculty.mit.edu/eso/additional-materials/)
 
 - famareg.sas (SAS Macro to run Fama/MacBeth Regressions)
 - dummy.sas (SAS Macro to Create Dummy Variables)
